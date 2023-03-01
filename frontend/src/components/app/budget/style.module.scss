@@ -1,0 +1,114 @@
+.wrapper {
+  min-height: 100vh;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heading1 {
+  margin-bottom: 44px;
+}
+.table {
+  width: 100%;
+  tr {
+    td:nth-child(2) {
+      text-align: right;
+    }
+    th:nth-child(2) {
+      text-align: right;
+    }
+    &:last-child {
+      border-top: 1px solid gray;
+      border-bottom: 1px solid gray;
+    }
+  }
+  td,
+  th {
+    padding: 6px 0;
+  }
+}
+.feedbackText {
+  text-align: center;
+  padding: 33px 0 88px 0;
+}
+.expensesWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-items: center;
+  margin: 0 -5px;
+  width: calc(100% + 10px);
+  .checkboxCard {
+    margin: 5px;
+  }
+}
+
+// checkbox
+$color_1: #ffffff;
+$color_2: #00b300;
+$color_3: #333333;
+
+.checkboxCard {
+  display: inline-block;
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 8px;
+  cursor: pointer;
+  input[type="checkbox"] {
+    display: none;
+    &:checked {
+      ~ {
+        .cardContent {
+          background-color: #00b300;
+          border-color: #00b300;
+          .checkboxText {
+            color: $color_1;
+          }
+          .checkboxCircle {
+            background-color: #ffffff;
+            &:after {
+              content: "\2713";
+              color: $color_2;
+            }
+          }
+          svg {
+            color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+}
+.cardContent {
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  border: 2px solid #eaeaea;
+  transition: all 0.3s ease;
+  &:hover {
+    border-color: #cccccc;
+  }
+}
+.checkboxCircle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid #eaeaea;
+  margin-right: 10px;
+  &:after {
+    content: "";
+    display: block;
+  }
+}
+.checkboxText {
+  font-size: 16px;
+  font-weight: 500;
+  color: $color_3;
+  margin: 0 15px;
+}

@@ -4,7 +4,8 @@ import { StaticImage } from "gatsby-plugin-image"
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
-import * as styles from "../components/index.module.css"
+import "../styles/style.scss"
+import Button from 'react-bootstrap/Button';
 
 const links = [
   {
@@ -71,7 +72,7 @@ const utmParameters = `?utm_source=starter&utm_medium=start-page&utm_campaign=de
 
 const IndexPage = () => (
   <Layout>
-    <div className={styles.textCenter}>
+    <div >
       <StaticImage
         src="../images/example.png"
         loading="eager"
@@ -84,7 +85,7 @@ const IndexPage = () => (
       <h1>
         Welcome to <b>Gatsby!</b>
       </h1>
-      <p className={styles.intro}>
+      <p >
         <b>Example pages:</b>{" "}
         {samplePageLinks.map((link, i) => (
           <React.Fragment key={link.url}>
@@ -94,18 +95,35 @@ const IndexPage = () => (
         ))}
         <br />
         Edit <code>src/pages/index.js</code> to update this page.
+        <Button variant="primary">Primary</Button>{' '}
+        <Button variant="secondary">Secondary</Button>{' '}
+        <Button variant="success">Success</Button>{' '}
+        <Button variant="warning">Warning</Button>{' '}
+        <Button variant="danger">Danger</Button>{' '}
+        <Button variant="info">Info</Button>{' '}
+        <Button variant="light">Light</Button>{' '}
+        <Button variant="dark">Dark</Button>
+        <Button variant="link">Link</Button>
+        <Button variant="outline-primary">Primary</Button>{' '}
+        <Button variant="outline-secondary">Secondary</Button>{' '}
+        <Button variant="outline-success">Success</Button>{' '}
+        <Button variant="outline-warning">Warning</Button>{' '}
+        <Button variant="outline-danger">Danger</Button>{' '}
+        <Button variant="outline-info">Info</Button>{' '}
+        <Button variant="outline-light">Light</Button>{' '}
+        <Button variant="outline-dark">Dark</Button>
       </p>
     </div>
-    <ul className={styles.list}>
+    <ul >
       {links.map(link => (
-        <li key={link.url} className={styles.listItem}>
+        <li key={link.url} >
           <a
-            className={styles.listItemLink}
+
             href={`${link.url}${utmParameters}`}
           >
             {link.text} ↗
           </a>
-          <p className={styles.listItemDescription}>{link.description}</p>
+          <p >{link.description}</p>
         </li>
       ))}
     </ul>

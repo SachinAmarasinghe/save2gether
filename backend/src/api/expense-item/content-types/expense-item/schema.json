@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "expense_items",
+  "info": {
+    "singularName": "expense-item",
+    "pluralName": "expense-items",
+    "displayName": "ExpenseItem"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "expenseCategory": {
+      "type": "component",
+      "repeatable": true,
+      "component": "budget.expense"
+    },
+    "date": {
+      "type": "date"
+    },
+    "value": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "note": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_budget_expenses",
+  "info": {
+    "displayName": "expense",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "type": "decimal",
+      "required": true,
+      "min": 0
+    },
+    "icon": {
+      "type": "string"
+    }
+  }
+}

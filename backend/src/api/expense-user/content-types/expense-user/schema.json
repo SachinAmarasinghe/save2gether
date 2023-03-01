@@ -1,0 +1,26 @@
+{
+  "kind": "collectionType",
+  "collectionName": "expense_users",
+  "info": {
+    "singularName": "expense-user",
+    "pluralName": "expense-users",
+    "displayName": "ExpenseUser",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "icon": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    }
+  }
+}

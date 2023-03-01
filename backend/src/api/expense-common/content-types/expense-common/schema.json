@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "expense_commons",
+  "info": {
+    "singularName": "expense-common",
+    "pluralName": "expense-commons",
+    "displayName": "ExpenseCommon",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "icon": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    }
+  }
+}
