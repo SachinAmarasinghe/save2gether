@@ -10,12 +10,15 @@
       "type": "string",
       "required": true
     },
-    "value": {
+    "amount": {
       "type": "decimal",
       "required": true,
       "min": 0
     },
     "icon": {
+      "type": "string"
+    },
+    "value": {
       "type": "string"
     }
   }

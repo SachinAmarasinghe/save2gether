@@ -4,28 +4,34 @@
   "info": {
     "singularName": "expense-item",
     "pluralName": "expense-items",
-    "displayName": "ExpenseItem"
+    "displayName": "ExpenseItem",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "expenseCategory": {
-      "type": "component",
-      "repeatable": true,
-      "component": "budget.expense"
-    },
     "date": {
       "type": "date"
     },
     "value": {
-      "type": "decimal",
-      "required": true,
-      "min": 0
+      "type": "decimal"
     },
     "note": {
-      "type": "string"
+      "type": "text"
+    },
+    "Category": {
+      "displayName": "ExpenseCategory",
+      "type": "component",
+      "repeatable": false,
+      "component": "budget.expense-category"
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "expense_items"
     }
   }
 }

@@ -13,3 +13,27 @@ $font-family-sans-serif: "Poppins", sans-serif;
 @import "../../node_modules/bootstrap/scss/bootstrap.scss";
 
 // overrides
+// table styles for bordered striped table
+.table {
+  &-striped {
+    border: 0;
+    border-color: transparent;
+    thead {
+      tr {
+        th {
+          background-color: #f3f3f3;
+        }
+      }
+    }
+    tbody {
+      tr:nth-of-type(odd) > * {
+        background-color: transparent;
+        --bs-table-accent-bg: transparent;
+      }
+      tr:nth-of-type(even) > * {
+        background-color: #fafafa;
+        --bs-table-accent-bg: #fafafa;
+      }
+    }
+  }
+}

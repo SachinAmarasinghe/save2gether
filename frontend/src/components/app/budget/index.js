@@ -1,72 +1,135 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, InputGroup, Row } from 'react-bootstrap'
+import { PostBudget } from '../../../services/api'
 import STCard from '../../stcard'
 import * as styles from '../budget/style.module.scss'
-import Select from 'react-select'
-import { GetAllCommonExpenses, GetAllUserExpenses } from '../../../services/api'
-import * as Icon from 'react-feather'
 
 const Index = () => {
+    const budgetCategories = [
+        { value: 'dinning', label: 'Dinning', icon: 'Coffee' },
+        { value: 'entertainment', label: 'Entertainment', icon: 'Music' },
+        { value: 'groceries', label: 'Groceries', icon: 'ShoppingCart' }
+    ]
+
+
     const [activeSection, setActiveSection] = useState(1)
     // budget data 
     const [budgetName, setBudgetName] = useState("")
     const [budgetFrom, setBudgetFrom] = useState("")
     const [budgetTill, setBudgetTill] = useState("")
-    // expenses 
-    const [newExpenses, setNewExpenses] = useState([])
-    const [checkedExpenses, setCheckedExpenses] = useState([]);
+    const [isValid, setIsValid] = useState(false);
+    useEffect(() => {
+        // Check if all inputs are filled
+        if (budgetName && budgetFrom && budgetTill) {
+            const from = new Date(budgetFrom);
+            const till = new Date(budgetTill);
+
+            if (!isNaN(from.getTime()) && !isNaN(till.getTime()) && from <= till) {
+                setIsValid(true);
+            } else {
+                setIsValid(false);
+            }
+        } else {
+            setIsValid(false);
+        }
+    }, [budgetName, budgetFrom, budgetTill]);
+
     // income and expenses 
     const [income, setIncome] = useState();
-    const [selectedCategory, setSelectedCategory] = useState();
-    const [expenseValue, setExpenseValue] = useState();
-    const [expenses, setExpenses] = useState([]);
+    const [budgetItems, setBudgetItems] = useState([]);
+    const [budgetSavings, setbudgetSavings] = useState();
+    const [budgetTotal, setbudgetTotal] = useState();
 
-
-    useEffect(() => {
-        const getExpenses = async () => {
-            const commonExpenses = await GetAllCommonExpenses();
-            const userExpenses = await GetAllUserExpenses();
-            if (userExpenses.length > 0) {
-                setNewExpenses(userExpenses.data.data);
-            } else {
-                setNewExpenses(commonExpenses.data.data);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const budgetPayload = {
+            "data": {
+                "name": "string",
+                "startDate": "2023-03-02",
+                "endDate": "2023-03-02",
+                "income": 0,
+                "total": 0,
+                "expenses": [
+                    {
+                        "id": 0,
+                        "name": "string",
+                        "amount": 0,
+                        "icon": "string",
+                        "value": "string"
+                    }
+                ]
             }
         }
-        getExpenses()
-    }, [])
-
-    const handleExpensesChange = (event) => {
-        const value = event.target.value;
-        const index = checkedExpenses.indexOf(value);
-
-        if (index > -1) {
-            // If the checkbox was previously checked, remove its value from the state
-            setCheckedExpenses(checkedExpenses.filter((item) => item !== value));
-        } else {
-            // If the checkbox was previously unchecked, add its value to the state
-            setCheckedExpenses([...checkedExpenses, value]);
+        try {
+            const response = await PostBudget(budgetPayload)
+            console.log(response)
+        } catch (error) {
+            console.log(error)
         }
     };
 
-    const expenseOptionsArray = checkedExpenses.map(item => {
-        const label = item.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        return { value: item, label: label };
-    });
+    useEffect(() => {
+        calcTotalAndSavings()
+    }, [income, budgetItems])
 
-    const onCategoryChange = (event) => {
-        setSelectedCategory(event.target.value)
+    const calcTotalAndSavings = () => {
+        const totalBudget = budgetItems.reduce(
+            (acc, item) => acc + parseFloat(item.amount),
+            0
+        );
+        setbudgetTotal((totalBudget).toFixed(2))
+        const savings = ((isNaN(income) || isNaN(totalBudget)) ? 0 : income - totalBudget).toFixed(2);
+        setbudgetSavings(savings);
     }
 
-    const onAddExpense = () => {
-        setExpenses([...expenses, { category: selectedCategory, value: expenseValue }]);
-        setSelectedCategory("");
-        setExpenseValue("");
-    };
+    const incomeOnchange = (event) => {
+        const value = event.target.value;
+        const numDecimals = (value.split('.')[1] || '').length;
+
+        if (numDecimals > 2) {
+            const roundedValue = parseFloat(value).toFixed(2);
+            setIncome(roundedValue);
+        } else {
+            setIncome(value);
+        }
+    }
+
+
+    const handleInputChange = (event) => {
+        const { name, value } = event.target;
+        const label = event.target.getAttribute('data-label');
+        const index = budgetCategories.findIndex((category) => category.value === name);
+        const updatedBudgetItems = [...budgetItems];
+        const roundedValue = Math.round(parseFloat(value) * 100) / 100;
+        const formattedValue = roundedValue.toFixed(2);
+
+        if (formattedValue === 'NaN') {
+            updatedBudgetItems.splice(index, 1);
+        } else {
+            updatedBudgetItems[index] = { name, amount: formattedValue, label };
+        }
+        setBudgetItems(updatedBudgetItems);
+        calcTotalAndSavings()
+    }
+
+    const inputFields = budgetCategories.map((category) => {
+        const index = budgetCategories.findIndex((c) => c.value === category.value);
+        const budgetItem = budgetItems[index] || {};
+        return (
+            <div key={category.value}>
+                <Form.Label>{category.label}</Form.Label>
+                <InputGroup className="w-100 mb-3">
+                    <InputGroup.Text>$</InputGroup.Text>
+                    <Form.Control type='number' data-label={category.label} name={category.value} defaultValue={budgetItem.amount || ''} id={category.value} onChange={handleInputChange} />
+                </InputGroup>
+            </div>
+        );
+    });
 
     return (
         <Container>
             <Row>
-                <Col className={styles.wrapper}>
+                <Col className={styles.wrapper} lg={12}>
                     <STCard>
                         {/* Budget name and time period  */}
                         {activeSection === 1 &&
@@ -93,48 +156,16 @@ const Index = () => {
                                         </Row>
                                         <Row className='justify-content-end'>
                                             <Col lg={4}>
-                                                <Button className='mt-4 w-100' onClick={() => setActiveSection(2)}>Next</Button>
+                                                <Button disabled={!isValid} className='mt-4 w-100' onClick={() => setActiveSection(2)}>Next</Button>
                                             </Col>
                                         </Row>
                                     </Form>
                                 </Col>
                             </Row>
                         }
-                        {/* Configure expense categories  */}
-                        {activeSection === 2 &&
-                            <Row className='justify-content-center'>
-                                <Col lg={12} md={12} sm={12}>
-                                    <h4 className={styles.heading1}>What will you be spending on during this budget period?</h4>
-                                    <Form>
-                                        <div className={styles.expensesWrapper}>
-                                            {newExpenses.map(expense => (
-                                                <label key={expense.id} className={styles.checkboxCard}>
-                                                    <input type="checkbox"
-                                                        value={expense.attributes.value}
-                                                        checked={checkedExpenses.includes(expense.attributes.value)}
-                                                        onChange={handleExpensesChange}
-                                                    />
-                                                    <div className={styles.cardContent}>
-                                                        <span className={styles.checkboxText}>{expense.attributes.name}</span>
-                                                        <div className={styles.checkboxCircle}></div>
-                                                    </div>
-                                                </label>
-                                            ))}
-                                        </div>
-                                        <Row className='justify-content-between'>
-                                            <Col lg={4}>
-                                                <Button className='mt-4 w-100' onClick={() => setActiveSection(1)}>Back</Button>
-                                            </Col>
-                                            <Col lg={4}>
-                                                <Button className='mt-4 w-100' onClick={() => setActiveSection(3)}>Next</Button>
-                                            </Col>
-                                        </Row>
-                                    </Form>
-                                </Col>
-                            </Row>
-                        }
+
                         {/* Add expenses for the budget period  */}
-                        {activeSection === 3 &&
+                        {activeSection === 2 &&
                             <Row>
                                 <Col lg={8} md={6} sm={12} className="border-end">
                                     <h4 className={styles.heading1}>Let’s create a simple budget for the month</h4>
@@ -142,81 +173,83 @@ const Index = () => {
                                     <Form>
                                         <InputGroup className="mb-3">
                                             <InputGroup.Text>$</InputGroup.Text>
-                                            <Form.Control value={income} onChange={event => setIncome(event.target.value)} aria-label="Amount (to the nearest dollar)" />
-                                            <InputGroup.Text>.00</InputGroup.Text>
+                                            <Form.Control type='number' value={income} onChange={incomeOnchange} />
                                         </InputGroup>
                                         <p>What’s will be your expenses for the month?</p>
-                                        <Row className='align-items-end'>
-                                            <Col lg={6} md={12}>
-                                                <Form.Group className='w-100'>
-                                                    <Form.Label>Expense</Form.Label>
-                                                    <Select options={expenseOptionsArray} onChange={onCategoryChange} />
-                                                </Form.Group>
-                                            </Col>
-                                            <Col lg={6} md={12}>
-                                                <InputGroup className="w-100">
-                                                    <InputGroup.Text>$</InputGroup.Text>
-                                                    <Form.Control value={expenseValue} onChange={(event) => setExpenseValue(event.target.value)} />
-                                                    <InputGroup.Text>.00</InputGroup.Text>
-                                                </InputGroup>
-                                            </Col>
-                                        </Row>
-                                        <div className='d-block text-end pt-4'>
-                                            <Button variant='outline-secondary'>Add another expense</Button>
-                                        </div>
-
+                                        {inputFields}
                                     </Form>
-                                    <Button onClick={() => setActiveSection(2)}>Back</Button>
+                                    <Button onClick={() => setActiveSection(1)}>Back</Button>
                                 </Col>
                                 <Col lg={4} md={6} sm={12}>
                                     <h4 className={styles.heading1}>Your monthly budget</h4>
                                     <table className={styles.table}>
-                                        <thead>
+                                        {income ? <thead>
                                             <tr>
                                                 <th>Income</th>
-                                                <th>$ 3,250.00</th>
+                                                <th>$ {income}</th>
                                             </tr>
-                                        </thead>
+                                        </thead> : ''}
+
                                         <tbody>
-                                            <tr>
+                                            {budgetItems.length > 0 ? <tr>
                                                 <th scope='2'>Expenses</th>
-                                            </tr>
-                                            <tr>
-                                                <td>Groceries</td>
-                                                <td><b>- $ 350.00</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Groceries</td>
-                                                <td><b>- $ 350.00</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Groceries</td>
-                                                <td><b>- $ 350.00</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Groceries</td>
-                                                <td><b>- $ 350.00</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Groceries</td>
-                                                <td><b>- $ 350.00</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Groceries</td>
-                                                <td><b>- $ 350.00</b></td>
-                                            </tr>
-                                            <tr>
-                                                <td><b>Total</b></td>
-                                                <td><b>$ 2350.00</b></td>
-                                            </tr>
+                                            </tr> : ''}
+
+                                            {
+                                                budgetItems && budgetItems.map((item, index) => (
+                                                    <tr key={index}>
+                                                        <td>{item.label}</td>
+                                                        <td><b>$ {item.amount}</b></td>
+                                                    </tr>
+                                                ))
+                                            }
+                                            {(budgetTotal > 0 || income) ?
+                                                <>
+                                                    {budgetTotal !== 0 && <tr>
+                                                        <td><b>Total expenses</b></td>
+                                                        <td><b>$ {budgetTotal}</b></td>
+                                                    </tr>}
+                                                    {budgetSavings !== 0 && <tr>
+                                                        <td><b>Total savings</b></td>
+                                                        <td><b>$ {budgetSavings}</b></td>
+                                                    </tr>}
+                                                </>
+                                                : ''
+                                            }
+
                                         </tbody>
                                     </table>
+                                    {(!income || budgetItems.length < 0) ?
+                                        <div className={styles.feedbackText}>
+                                            <p>Add values to your budget and see your budget breakdown.</p>
+                                        </div>
+                                        :
+                                        <div className={styles.feedbackText}>
+                                            {(budgetSavings > 0) &&
+                                                <>
+                                                    <p><b>Congratulations!</b></p>
+                                                    <p>If you stick to the above budget you’ll be able to save <strong>$ {budgetSavings}</strong> this month. That’s <strong>{(budgetSavings / income * 100).toFixed(0)}% of your income</strong>, which is really outstanding!</p>
+                                                </>
+                                            }
+                                            {(budgetSavings == 0) &&
+                                                <>
+                                                    <p><b>You're on track!</b></p>
+                                                    <p>Stick to this budget and you'll be able to get through the budget period without any losses!</p>
+                                                </>
+                                            }
+                                            {(budgetSavings < 0) &&
+                                                <>
+                                                    <p><b>Oh!</b></p>
+                                                    <p>Seems like you'll be running a defecit of <strong>$ {budgetSavings}</strong> for this period. See if you can reduce some expenses and manage.</p>
+                                                </>
+                                            }
 
-                                    <div className={styles.feedbackText}>
-                                        <p><b>Congratulations!</b></p>
-                                        <p>If you stick to the above budget you’ll be able to save <strong>$ 400.00</strong> this month. That’s <strong>20% of your income</strong>, which is really outstanding!</p>
-                                    </div>
-                                    <Button className='w-100'>Save and continue</Button>
+                                        </div>
+                                    }
+                                    {income && budgetItems.length > 0 ?
+                                        <Button className='w-100 mt-3' onClick={handleSubmit}>Save and continue</Button> : ''
+                                    }
+
                                 </Col>
                             </Row>
                         }

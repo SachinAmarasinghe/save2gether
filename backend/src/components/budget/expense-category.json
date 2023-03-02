@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_budget_expense_categories",
+  "info": {
+    "displayName": "ExpenseCategory"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string"
+    }
+  }
+}

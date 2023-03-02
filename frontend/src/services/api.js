@@ -74,7 +74,40 @@ export const GetAllUserExpenses = async () => {
 
 export const GetAllBudgets = async () => {
     try {
-        const response = await axios.get("http://localhost:1337/api/budgets?populate=*");
+        const response = await axios.get("http://localhost:1337/api/budgets");
+        return response;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// POST budget 
+
+export const PostBudget = async (budgetPayload) => {
+    try {
+        const response = await axios.post("http://localhost:1337/api/budgets", budgetPayload);
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// GET All ExpenseItems 
+
+export const GetAllExpenseItems = async () => {
+    try {
+        const response = await axios.get("http://localhost:1337/api/expense-items?populate=*");
+        return response;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+// POST ExpenseItem 
+
+export const PostExpenseItem = async (expenseItemPayload) => {
+    try {
+        const response = axios.post("http://localhost:1337/api/expense-items", expenseItemPayload);
         return response;
     } catch (error) {
         console.log(error)
