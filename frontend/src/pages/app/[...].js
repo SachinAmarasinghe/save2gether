@@ -6,6 +6,7 @@ import PrivateRoute from '../../components/privateRoute'
 import Signin from '../../components/app/signin'
 import Signup from '../../components/app/signup'
 import { setAuthToken } from '../../services/setAuthToken'
+import AppLayout from '../../components/app/appLayout'
 
 const App = () => {
     const token = sessionStorage.getItem("token");
@@ -13,12 +14,14 @@ const App = () => {
         setAuthToken(token);
     }
     return (
-        <Router basepath='/app'>
-            <PrivateRoute component={Dashboard} path='/' />
-            <PrivateRoute component={Budget} path='/budget' />
-            <Signin path="/signin" />
-            <Signup path="/signup" />
-        </Router>
+        <AppLayout>
+            <Router basepath='/app'>
+                <PrivateRoute component={Dashboard} path='/' />
+                <PrivateRoute component={Budget} path='/budget' />
+                <Signin path="/signin" />
+                <Signup path="/signup" />
+            </Router>
+        </AppLayout>
     )
 }
 
