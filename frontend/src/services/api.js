@@ -46,6 +46,16 @@ export const Signin = async (signinPayload) => {
     }
 }
 
+// GET users 
+const GetAllUsers = async () => {
+    try {
+        const response = await axios.get('http://localhost:1337/api/users');
+        return response;
+    } catch (error) {
+        console.log(error)
+    }
+}
+
 // budget api calls -------------------------------------------------------------------------------------------
 
 // GET All CommonExpenses 
