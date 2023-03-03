@@ -33,7 +33,7 @@ const Signin = () => {
                 <Col xl={5} lg={6} md={10} sm={12}>
                     <STCard>
                         <div className='mb-5 d-flex justify-content-center'>
-                            <StaticImage src='../../images/logo.svg' alt='logo' />
+                            <StaticImage src='./images/logo.svg' alt='logo' />
                         </div>
                         <Form>
                             <Form.Group className='mb-3'>
@@ -48,9 +48,9 @@ const Signin = () => {
                                     <Link to='/forgotPassword'>Forgot password?</Link>
                                 </Form.Text>
                             </Form.Group>
-                            <Form.Group className='mb-3'>
+                            {/* <Form.Group className='mb-3'>
                                 <Form.Check type="checkbox" label="Remember me" />
-                            </Form.Group>
+                            </Form.Group> */}
                             <div className="d-grid gap-2">
                                 <Button variant="primary" onClick={handleSubmit} className='mb-3'>
                                     Signin
