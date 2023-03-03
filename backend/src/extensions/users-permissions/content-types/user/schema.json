@@ -81,6 +81,12 @@
       "relation": "oneToMany",
       "target": "api::expense-item.expense-item",
       "mappedBy": "owner"
+    },
+    "budget": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::budget.budget",
+      "mappedBy": "owner"
     }
   }
 }
